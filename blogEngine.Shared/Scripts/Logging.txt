@@ -1,0 +1,135 @@
+﻿/****** Object:  Table [dbo].[LogType]    Script Date: 04/06/2012 14:58:56 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[LogType](
+	[LogTypeID] [int] NOT NULL,
+	[LogTypeName] [varchar](50) NOT NULL,
+	[Description] [varchar](100) NULL,
+ CONSTRAINT [PK_LogType] PRIMARY KEY CLUSTERED 
+(
+	[LogTypeID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+/****** Object:  Table [dbo].[Log]    Script Date: 04/06/2012 15:00:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Log](
+	[LogID] [int] IDENTITY(1,1) NOT NULL,
+	[EntityID] [int] NOT NULL,
+	[UserID] [int] NOT NULL,
+	[LogTypeID] [int] NOT NULL,
+	[ApplicationID] [int] NULL,
+	[Controller] [varchar](100) NULL,
+	[Action] [varchar](100) NULL,
+	[View] [varchar](100) NULL,
+	[QueryString] [varchar](255) NULL,
+	[LogText] [varchar](500) NULL,
+	[UserAgent] [varchar](100) NULL,
+	[MachineName] [varchar](100) NULL,
+	[ProcessID] [varchar](100) NULL,
+	[ProcessName] [varchar](100) NULL,
+ CONSTRAINT [PK_Log] PRIMARY KEY CLUSTERED 
+(
+	[LogID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Log]  WITH CHECK ADD  CONSTRAINT [FK_Log_LogType] FOREIGN KEY([LogTypeID])
+REFERENCES [dbo].[LogType] ([LogTypeID])
+GO
+
+ALTER TABLE [dbo].[Log] CHECK CONSTRAINT [FK_Log_LogType]
+GO
+
+ALTER TABLE [dbo].[Log] ADD  CONSTRAINT [DF_Log_EntityID]  DEFAULT ((0)) FOR [EntityID]
+GO
+
+ALTER TABLE [dbo].[Log] ADD  CONSTRAINT [DF_Log_UserID]  DEFAULT ((0)) FOR [UserID]
+GO
+
+
+/****** Object:  Table [dbo].[LogDetail]    Script Date: 04/06/2012 15:01:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[LogDetail](
+	[LogDetailID] [int] IDENTITY(1,1) NOT NULL,
+	[LogID] [int] NOT NULL,
+	[Detail] [varchar](500) NOT NULL,
+ CONSTRAINT [PK_LogDetail] PRIMARY KEY CLUSTERED 
+(
+	[LogDetailID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[LogDetail]  WITH CHECK ADD  CONSTRAINT [FK_LogDetail_Log] FOREIGN KEY([LogID])
+REFERENCES [dbo].[Log] ([LogID])
+GO
+
+ALTER TABLE [dbo].[LogDetail] CHECK CONSTRAINT [FK_LogDetail_Log]
+GO
+
+/****** Object:  Table [dbo].[RequestStat]    Script Date: 04/06/2012 15:02:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RequestStat](
+	[RequestStatID] [int] IDENTITY(1,1) NOT NULL,
+	[LogID] [int] NOT NULL,
+	[InitTime] [datetime] NULL,
+	[StartTime] [datetime] NULL,
+	[EndTime] [datetime] NULL,
+	[Duration] [decimal](18, 0) NULL,
+ CONSTRAINT [PK_RequestStat] PRIMARY KEY CLUSTERED 
+(
+	[RequestStatID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[RequestStat]  WITH CHECK ADD  CONSTRAINT [FK_RequestStat_Log] FOREIGN KEY([LogID])
+REFERENCES [dbo].[Log] ([LogID])
+GO
+
+ALTER TABLE [dbo].[RequestStat] CHECK CONSTRAINT [FK_RequestStat_Log]
+GO

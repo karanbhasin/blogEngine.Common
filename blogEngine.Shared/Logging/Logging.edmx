@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Logging.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="LoggingStoreContainer">
+          <EntitySet Name="Log" EntityType="Logging.Store.Log" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LogDetail" EntityType="Logging.Store.LogDetail" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="LogType" EntityType="Logging.Store.LogType" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="RequestStat" EntityType="Logging.Store.RequestStat" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Log_LogType" Association="Logging.Store.FK_Log_LogType">
+            <End Role="LogType" EntitySet="LogType" />
+            <End Role="Log" EntitySet="Log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogDetail_Log" Association="Logging.Store.FK_LogDetail_Log">
+            <End Role="Log" EntitySet="Log" />
+            <End Role="LogDetail" EntitySet="LogDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestStat_Log" Association="Logging.Store.FK_RequestStat_Log">
+            <End Role="Log" EntitySet="Log" />
+            <End Role="RequestStat" EntitySet="RequestStat" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="LogID" />
+          </Key>
+          <Property Name="LogID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="EntityID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="LogTypeID" Type="int" Nullable="false" />
+          <Property Name="ApplicationID" Type="int" />
+          <Property Name="Controller" Type="varchar" MaxLength="50" />
+          <Property Name="Action" Type="varchar" MaxLength="50" />
+          <Property Name="View" Type="varchar" MaxLength="50" />
+          <Property Name="QueryString" Type="varchar" MaxLength="255" />
+          <Property Name="LogText" Type="varchar" MaxLength="500" />
+          <Property Name="UserAgent" Type="varchar" MaxLength="50" />
+          <Property Name="MachineName" Type="varchar" MaxLength="100" />
+          <Property Name="ProcessID" Type="varchar" MaxLength="100" />
+          <Property Name="ProcessName" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="LogDetail">
+          <Key>
+            <PropertyRef Name="LogDetailID" />
+          </Key>
+          <Property Name="LogDetailID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="int" Nullable="false" />
+          <Property Name="Detail" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LogType">
+          <Key>
+            <PropertyRef Name="LogTypeID" />
+          </Key>
+          <Property Name="LogTypeID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LogTypeName" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="RequestStat">
+          <Key>
+            <PropertyRef Name="RequestStatID" />
+          </Key>
+          <Property Name="RequestStatID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="int" Nullable="false" />
+          <Property Name="InitTime" Type="datetime" />
+          <Property Name="StartTime" Type="datetime" />
+          <Property Name="EndTime" Type="datetime" />
+          <Property Name="Duration" Type="decimal" />
+        </EntityType>
+        <Association Name="FK_Log_LogType">
+          <End Role="LogType" Type="Logging.Store.LogType" Multiplicity="1" />
+          <End Role="Log" Type="Logging.Store.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LogType">
+              <PropertyRef Name="LogTypeID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="LogTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogDetail_Log">
+          <End Role="Log" Type="Logging.Store.Log" Multiplicity="1" />
+          <End Role="LogDetail" Type="Logging.Store.LogDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Log">
+              <PropertyRef Name="LogID" />
+            </Principal>
+            <Dependent Role="LogDetail">
+              <PropertyRef Name="LogID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestStat_Log">
+          <End Role="Log" Type="Logging.Store.Log" Multiplicity="1" />
+          <End Role="RequestStat" Type="Logging.Store.RequestStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Log">
+              <PropertyRef Name="LogID" />
+            </Principal>
+            <Dependent Role="RequestStat">
+              <PropertyRef Name="LogID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Logging" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="LoggingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="LogDetails" EntityType="Logging.LogDetail" />
+          <EntitySet Name="LogTypes" EntityType="Logging.LogType" />
+          <EntitySet Name="RequestStats" EntityType="Logging.RequestStat" />
+          <EntitySet Name="Logs" EntityType="Logging.Log" />
+          <AssociationSet Name="FK_Log_LogType" Association="Logging.FK_Log_LogType">
+            <End Role="LogType" EntitySet="LogTypes" />
+            <End Role="Log" EntitySet="Logs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LogDetail_Log" Association="Logging.FK_LogDetail_Log">
+            <End Role="Log" EntitySet="Logs" />
+            <End Role="LogDetail" EntitySet="LogDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RequestStat_Log" Association="Logging.FK_RequestStat_Log">
+            <End Role="Log" EntitySet="Logs" />
+            <End Role="RequestStat" EntitySet="RequestStats" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="LogDetail">
+          <Key>
+            <PropertyRef Name="LogDetailID" />
+          </Key>
+          <Property Name="LogDetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="Int32" Nullable="false" />
+          <Property Name="Detail" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Log" Relationship="Logging.FK_LogDetail_Log" FromRole="LogDetail" ToRole="Log" />
+        </EntityType>
+        <EntityType Name="LogType">
+          <Key>
+            <PropertyRef Name="LogTypeID" />
+          </Key>
+          <Property Name="LogTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogTypeName" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Logs" Relationship="Logging.FK_Log_LogType" FromRole="LogType" ToRole="Log" />
+        </EntityType>
+        <EntityType Name="RequestStat">
+          <Key>
+            <PropertyRef Name="RequestStatID" />
+          </Key>
+          <Property Name="RequestStatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogID" Type="Int32" Nullable="false" />
+          <Property Name="InitTime" Type="DateTime" />
+          <Property Name="StartTime" Type="DateTime" />
+          <Property Name="EndTime" Type="DateTime" />
+          <Property Name="Duration" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="Log" Relationship="Logging.FK_RequestStat_Log" FromRole="RequestStat" ToRole="Log" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="LogID" />
+          </Key>
+          <Property Type="Int32" Name="LogID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="EntityID" Nullable="false" />
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="Int32" Name="LogTypeID" Nullable="false" />
+          <Property Type="Int32" Name="ApplicationID" />
+          <Property Type="String" Name="Controller" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Action" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="View" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="QueryString" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="LogText" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="UserAgent" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="MachineName" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProcessID" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProcessName" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="LogType" Relationship="Logging.FK_Log_LogType" FromRole="Log" ToRole="LogType" />
+          <NavigationProperty Name="LogDetails" Relationship="Logging.FK_LogDetail_Log" FromRole="Log" ToRole="LogDetail" />
+          <NavigationProperty Name="RequestStats" Relationship="Logging.FK_RequestStat_Log" FromRole="Log" ToRole="RequestStat" />
+        </EntityType>
+        <Association Name="FK_Log_LogType">
+          <End Type="Logging.LogType" Role="LogType" Multiplicity="1" />
+          <End Type="Logging.Log" Role="Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LogType">
+              <PropertyRef Name="LogTypeID" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="LogTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LogDetail_Log">
+          <End Type="Logging.Log" Role="Log" Multiplicity="1" />
+          <End Type="Logging.LogDetail" Role="LogDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Log">
+              <PropertyRef Name="LogID" />
+            </Principal>
+            <Dependent Role="LogDetail">
+              <PropertyRef Name="LogID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RequestStat_Log">
+          <End Type="Logging.Log" Role="Log" Multiplicity="1" />
+          <End Type="Logging.RequestStat" Role="RequestStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Log">
+              <PropertyRef Name="LogID" />
+            </Principal>
+            <Dependent Role="RequestStat">
+              <PropertyRef Name="LogID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LoggingStoreContainer" CdmEntityContainer="LoggingEntities">
+          <EntitySetMapping Name="LogDetails"><EntityTypeMapping TypeName="Logging.LogDetail"><MappingFragment StoreEntitySet="LogDetail">
+            <ScalarProperty Name="LogDetailID" ColumnName="LogDetailID" />
+            <ScalarProperty Name="LogID" ColumnName="LogID" />
+            <ScalarProperty Name="Detail" ColumnName="Detail" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="LogTypes"><EntityTypeMapping TypeName="Logging.LogType"><MappingFragment StoreEntitySet="LogType">
+            <ScalarProperty Name="LogTypeID" ColumnName="LogTypeID" />
+            <ScalarProperty Name="LogTypeName" ColumnName="LogTypeName" />
+            <ScalarProperty Name="Description" ColumnName="Description" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="RequestStats"><EntityTypeMapping TypeName="Logging.RequestStat"><MappingFragment StoreEntitySet="RequestStat">
+            <ScalarProperty Name="RequestStatID" ColumnName="RequestStatID" />
+            <ScalarProperty Name="LogID" ColumnName="LogID" />
+            <ScalarProperty Name="InitTime" ColumnName="InitTime" />
+            <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+            <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+            <ScalarProperty Name="Duration" ColumnName="Duration" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Logs">
+            <EntityTypeMapping TypeName="Logging.Log">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="ProcessName" ColumnName="ProcessName" />
+                <ScalarProperty Name="ProcessID" ColumnName="ProcessID" />
+                <ScalarProperty Name="MachineName" ColumnName="MachineName" />
+                <ScalarProperty Name="UserAgent" ColumnName="UserAgent" />
+                <ScalarProperty Name="LogText" ColumnName="LogText" />
+                <ScalarProperty Name="QueryString" ColumnName="QueryString" />
+                <ScalarProperty Name="View" ColumnName="View" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Controller" ColumnName="Controller" />
+                <ScalarProperty Name="ApplicationID" ColumnName="ApplicationID" />
+                <ScalarProperty Name="LogTypeID" ColumnName="LogTypeID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="EntityID" ColumnName="EntityID" />
+                <ScalarProperty Name="LogID" ColumnName="LogID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Logging">
+        <EntityTypeShape EntityType="Logging.LogDetail" Width="1.5" PointX="5.25" PointY="1.125" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="Logging.LogType" Width="1.5" PointX="0.75" PointY="2.625" Height="1.787985026041667" IsExpanded="true" />
+        <EntityTypeShape EntityType="Logging.RequestStat" Width="1.5" PointX="5.25" PointY="3.625" Height="2.3648893229166656" IsExpanded="true" />
+        <EntityTypeShape EntityType="Logging.Log" Width="1.5" PointX="3" PointY="1.375" Height="4.2879036458333326" />
+        <AssociationConnector Association="Logging.FK_Log_LogType" >
+          <ConnectorPoint PointX="2.25" PointY="3.5189925130208333" />
+          <ConnectorPoint PointX="3" PointY="3.5189925130208333" />
+        </AssociationConnector>
+        <AssociationConnector Association="Logging.FK_LogDetail_Log" >
+          <ConnectorPoint PointX="4.5" PointY="2.1439925130208337" />
+          <ConnectorPoint PointX="5.25" PointY="2.1439925130208337" />
+        </AssociationConnector>
+        <AssociationConnector Association="Logging.FK_RequestStat_Log" >
+          <ConnectorPoint PointX="4.5" PointY="4.6439518229166659" />
+          <ConnectorPoint PointX="5.25" PointY="4.6439518229166659" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
